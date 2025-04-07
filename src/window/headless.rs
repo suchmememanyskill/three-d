@@ -97,6 +97,11 @@ fn build_context<T1: ContextCurrentState>(
     // but note that you must handle events for the window that come on the
     // events loop.
 
+    let _err3 = match build_context_osmesa(cb.clone()) {
+        Ok(ctx) => return Ok(ctx),
+        Err(err) => err,
+    };
+
     let el = EventLoop::new();
 
     let _err1 = match build_context_surfaceless(cb.clone(), &el) {
@@ -105,11 +110,6 @@ fn build_context<T1: ContextCurrentState>(
     };
 
     let err2 = match build_context_headless(cb.clone(), &el) {
-        Ok(ctx) => return Ok(ctx),
-        Err(err) => err,
-    };
-
-    let _err3 = match build_context_osmesa(cb) {
         Ok(ctx) => return Ok(ctx),
         Err(err) => err,
     };
