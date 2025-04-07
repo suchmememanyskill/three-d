@@ -59,14 +59,14 @@ impl std::ops::Deref for HeadlessContext {
     }
 }
 
-/*#[cfg(target_os = "linux")]
+#[cfg(target_os = "linux")]
 fn build_context_surfaceless<T1: ContextCurrentState>(
     cb: ContextBuilder<T1>,
     el: &EventLoop<()>,
 ) -> Result<glutin_029::Context<NotCurrent>, CreationError> {
     use glutin_029::platform::unix::HeadlessContextExt;
     cb.build_surfaceless(&el)
-}*/
+}
 
 fn build_context_headless<T1: ContextCurrentState>(
     cb: ContextBuilder<T1>,
@@ -97,20 +97,19 @@ fn build_context<T1: ContextCurrentState>(
     // but note that you must handle events for the window that come on the
     // events loop.
 
-    /*
-    let err1 = match build_context_surfaceless(cb.clone(), &el) {
-        Ok(ctx) => return Ok((ctx, el)),
-        Err(err) => err,
-    };*/
+    let el = EventLoop::new();
 
-    let _err3 = match build_context_osmesa(cb.clone()) {
+    let _err1 = match build_context_surfaceless(cb.clone(), &el) {
         Ok(ctx) => return Ok(ctx),
         Err(err) => err,
     };
 
-    let el = EventLoop::new();
+    let err2 = match build_context_headless(cb.clone(), &el) {
+        Ok(ctx) => return Ok(ctx),
+        Err(err) => err,
+    };
 
-    let err2 = match build_context_headless(cb, &el) {
+    let _err3 = match build_context_osmesa(cb) {
         Ok(ctx) => return Ok(ctx),
         Err(err) => err,
     };
